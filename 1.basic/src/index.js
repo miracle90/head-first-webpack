@@ -26,7 +26,7 @@ function readonly(target, key, descriptor) {
 }
 
 class Person {
-  @readonly PI = 3.14;
+  // @readonly PI = 3.14;
 }
 
 let p = new Person();
