@@ -1,3 +1,20 @@
+@import "./bg.css";
+
 body {
-  background: red;
+  color: white;
+}
+
+.bg {
+  /* width: 300px; */
+  height: 200px;
+  background-image: url(@/images/1.webp);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#bar {
+  width: 100px;
+  height: 100px;
+  background: goldenrod;
+  transform: rotate(45deg);
 }
