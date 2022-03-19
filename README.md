@@ -18,4 +18,4 @@
 > ### webpack插件
 > ### webpack优化
 > ### tapable
-> * 
+> * 异步串行钩子
