@@ -3,12 +3,13 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const SpeedMeasureWebpackPlugin = require("speed-measure-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin"); // webpack 内置了 terser-webpack-plugin
+const OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plugin");
+const TerserWebpackPlugin = require("terser-webpack-plugin"); // webpack 内置了 terser-webpack-plugin
 const PurgecssWebpackPlugin = require("purgecss-webpack-plugin");
 const glob = require("glob"); // 文件匹配模式
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const FriendlyErrorsWebpackPlugin = require("friendly-errors-webpack-plugin");
 
 function resolve(dir) {
   return path.resolve(__dirname, dir);
@@ -19,7 +20,12 @@ const smp = new SpeedMeasureWebpackPlugin();
 module.exports = (env, argv) => {
   return smp.wrap({
     mode: "production",
-    entry: "./src/index.js",
+    // entry: "./src/index.js",
+    entry: {
+      page1: "./src/index1.js",
+      page2: "./src/index2.js",
+      page3: "./src/index3.js",
+    },
     output: {
       path: path.resolve(__dirname, "dist"),
       filename: "[name].[hash:8].js",
@@ -38,10 +44,33 @@ module.exports = (env, argv) => {
       jquery: "jQuery", // 从输出的 bundle 中排除依赖
     },
     optimization: {
+      splitChunks: {
+        chunks: "all", //默认作用于异步chunk，值为all/initial/async
+        minSize: 0, // 生成 chunk 的最小体积（以 bytes 为单位）
+        minChunks: 1, // 拆分前必须共享模块的最小 chunks 数。
+        maxAsyncRequests: 2, // 限制异步模块内部的并行最大请求数的，说白了你可以理解为是每个import()它里面的最大并行请求数量
+        maxInitialRequests: 4, // 限制入口的拆分数量
+        // name: true, // 打包后的名称，默认是chunk的名字通过分隔符（默认是～）分隔开，如vendor~
+        automaticNameDelimiter: "~", // 默认webpack将会使用入口名和代码块的名称生成命名,比如 'vendors~main.js'
+        cacheGroups: {
+          // 设置缓存组用来抽取满足不同规则的chunk,下面以生成common为例
+          vendors: {
+            chunks: "all",
+            test: /node_modules/, //条件
+            priority: -10, ///优先级，一个chunk很可能满足多个缓存组，会被抽取到优先级高的缓存组中,为了能够让自定义缓存组有更高的优先级(默认0),默认缓存组的priority属性为负值.
+          },
+          commons: {
+            chunks: "all",
+            minSize: 0, //最小提取字节数
+            minChunks: 2, //最少被几个chunk引用
+            priority: -20,
+          },
+        },
+      },
       minimize: true,
       minimizer: [
-        new OptimizeCssAssetsPlugin({}), // 添加 css 压缩配置
-        new TerserPlugin({}), // 压缩js
+        new OptimizeCssAssetsWebpackPlugin({}), // 添加 css 压缩配置
+        new TerserWebpackPlugin({}), // 压缩js
       ],
     },
     cache: {
@@ -102,9 +131,39 @@ module.exports = (env, argv) => {
             "sass-loader",
           ],
         },
+        {
+          test: /\.(png|svg|jpg|gif|jpeg|ico)$/,
+          use: [
+            "file-loader",
+            {
+              loader: "image-webpack-loader",
+              options: {
+                mozjpeg: {
+                  progressive: true,
+                  quality: 65,
+                },
+                optipng: {
+                  enabled: false,
+                },
+                pngquant: {
+                  quality: "65-90",
+                  speed: 4,
+                },
+                gifsicle: {
+                  interlaced: false,
+                },
+                webp: {
+                  quality: 75,
+                },
+              },
+            },
+          ],
+        },
       ],
     },
+    // stats: "verbose",
     plugins: [
+      new FriendlyErrorsWebpackPlugin(),
       new PurgecssWebpackPlugin({
         // 去除无用的css的代码
         paths: glob.sync(`${resolve("src")}/**/*`, { nodir: true }),
@@ -120,6 +179,20 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         // 将js代码插入到html中
         template: "./src/index.html",
+        filename: "index1.html",
+        chunks: ["page1"],
+      }),
+      new HtmlWebpackPlugin({
+        // 将js代码插入到html中
+        template: "./src/index.html",
+        filename: "index2.html",
+        chunks: ["page2"],
+      }),
+      new HtmlWebpackPlugin({
+        // 将js代码插入到html中
+        template: "./src/index.html",
+        filename: "index3.html",
+        chunks: ["page3"],
       }),
       new webpack.IgnorePlugin({
         resourceRegExp: /^\.\/locale$/, // 目的是将插件中的非中文语音排除掉，这样就可以大大节省打包的体积了
