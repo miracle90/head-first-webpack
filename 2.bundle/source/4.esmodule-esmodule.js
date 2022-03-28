@@ -31,9 +31,7 @@ require.d = (exports, definition) => {
     }
   }
 };
-
 require.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
-
 require.r = (exports) => {
   if (typeof Symbol !== "undefined" && Symbol.toStringTag) {
     Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });

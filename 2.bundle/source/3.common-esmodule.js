@@ -23,7 +23,6 @@ function require(moduleId) {
   modules[moduleId](module, module.exports, require);
   return module.exports;
 }
-
 // 标明这个exports是es模块导出的结果
 // 不管是esmodule还是commonjs，导出的都是commonjs
 require.r = function (exports) {
@@ -35,10 +34,7 @@ require.r = function (exports) {
   // }
   Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
   Object.defineProperty(exports, "__esModule", { value: true });
-
-  console.log("exports", exports);
 };
-
 // 将导出的 default、属性，一个个都写到exports上
 require.d = function (exports, definition) {
   for (const key in definition) {
@@ -47,10 +43,7 @@ require.d = function (exports, definition) {
       get: definition[key],
     });
   }
-  console.log("exports +++ ", exports);
 };
-
-var __webpack_exports__ = {};
 let title = require("./src/title.js");
 console.log(title.default);
 console.log(title.age);

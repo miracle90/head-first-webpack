@@ -18,11 +18,6 @@ function require(moduleId) {
   modules[moduleId](module, module.exports, require);
   return module.exports;
 }
-/**
- * 获取导出对象的默认导出
- * @param {*} module
- * @returns
- */
 require.n = (module) => {
   // 如果是esModule导出，取 exports.default，否则返回 exports
   var getter =
@@ -31,7 +26,6 @@ require.n = (module) => {
   require.d(getter, { a: getter });
   return getter;
 };
-
 require.d = (exports, definition) => {
   for (var key in definition) {
     if (require.o(definition, key) && !require.o(exports, key)) {
@@ -42,9 +36,7 @@ require.d = (exports, definition) => {
     }
   }
 };
-
 require.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
-
 require.r = (exports) => {
   if (typeof Symbol !== "undefined" && Symbol.toStringTag) {
     Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
@@ -58,4 +50,3 @@ var _title_0__ = require("./src/title.js");
 var _title_0___default = require.n(_title_0__);
 // 返回的函数 getter 直接执行
 console.log(_title_0___default());
-console.log(_title_0__.age);

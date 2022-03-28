@@ -83,7 +83,6 @@ require.f.j = function (chunkId, promises) {
   });
   installedChunkData[2] = promise;
   promises.push(promise);
-  //promises.push(installedChunkData[2] = promise);
   const url = require.p + require.u(chunkId);
   require.l(url);
 };

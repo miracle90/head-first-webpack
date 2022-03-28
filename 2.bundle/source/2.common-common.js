@@ -10,10 +10,8 @@ const modules = {
     };
   },
 };
-
 // 缓存
 const cache = {};
-
 // webpack自己实现了一个符合commonjs规范的require
 function require(moduleId) {
   if (cache[moduleId]) return cache[moduleId].exports;
@@ -27,7 +25,6 @@ function require(moduleId) {
   // 返回模块的exports
   return module.exports;
 }
-
 // index.js中的代码直接拿过来，require相对路径
 let title = require("./src/title.js.js");
 let a = 1;
