@@ -1,4 +1,13 @@
-# webpack 基础配置
+## webpack 基础配置
+
+1. 入口 entry
+1. 输出 output
+1. 加载器 loader
+1. 插件 plugin
+1. 模式 mode
+1. devtool
+1. 开发服务器 devServer
+1. resolve
 
 ### 设置环境变量四种方式
 
