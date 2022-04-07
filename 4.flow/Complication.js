@@ -86,7 +86,7 @@ class Complication {
           let depModuleName = node.arguments[0].value; // ./title
           //获取当前模块的所在的目录
           let dirname = path.posix.dirname(modulePath); //src
-          //C:\aproject\zhufengwebpack202108\4.flow\src\title.js
+          // ...\webpack220203\4.flow\src\title.js
           let depModulePath = path.posix.join(dirname, depModuleName);
           let extensions = this.options.resolve.extensions;
           depModulePath = tryExtensions(depModulePath, extensions);
